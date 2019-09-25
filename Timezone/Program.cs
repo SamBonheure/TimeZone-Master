@@ -11,11 +11,20 @@ namespace Timezone
     {        
         static void Main(string[] args)
         {
-            Parser timeZoneParser = new Parser();
+            List<Tuple<string, string>> lTimes;
             using (Reader fileReader = new Reader())
             {
-                List<Tuple<string, string>> lTimes = fileReader.Read();
+                lTimes = fileReader.Read();
             }
+
+            Parser timeZoneParser = new Parser();
+            foreach (var time in lTimes)
+            {
+                timeZoneParser.DisplayTime(time.Item1, time.Item2);
+            }
+
+            // Keep console open for validation
+            Console.Read();
         }
     }
 }

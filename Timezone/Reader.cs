@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,11 +10,24 @@ namespace Timezone
 {
     class Reader : IReader, IDisposable
     {
+        /// <summary>
+        /// Read a text file of times and split accordingly
+        /// </summary>
+        /// <returns>List of times and timeszones to convert to</returns>
         public List<Tuple<string, string>> Read()
         {
             List<Tuple<string, string>> lReturn = new List<Tuple<string, string>>();
+            var assembly = Assembly.GetExecutingAssembly();
+            string[] fileParts;
 
-            string[] fileParts = File.ReadAllText("Timezone.txt").Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+            // Search for resource dynamically and include namespacing
+            string resourceName = assembly.GetManifestResourceNames().Single(str => str.EndsWith("Timezone.txt"));
+
+            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                fileParts = reader.ReadToEnd().Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            }
 
             foreach (string part in fileParts)
             {
@@ -26,6 +40,7 @@ namespace Timezone
 
             return lReturn;
         }
+
         public void Dispose()
         {
         }
