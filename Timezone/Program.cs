@@ -12,7 +12,7 @@ namespace Timezone
         static void Main(string[] args)
         {
             List<Tuple<string, string>> lTimes;
-            using (Reader fileReader = new Reader())
+            using (Reader<string,string> fileReader = new Reader<string, string>())
             {
                 lTimes = fileReader.Read();
             }

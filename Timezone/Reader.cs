@@ -8,15 +8,15 @@ using System.Threading.Tasks;
 
 namespace Timezone
 {
-    class Reader : IReader, IDisposable
+    class Reader<T, T2> : IReader<T, T2>, IDisposable
     {
         /// <summary>
         /// Read a text file of times and split accordingly
         /// </summary>
         /// <returns>List of times and timeszones to convert to</returns>
-        public List<Tuple<string, string>> Read()
+        public List<Tuple<T, T2>> Read()
         {
-            List<Tuple<string, string>> lReturn = new List<Tuple<string, string>>();
+            List<Tuple<T, T2>> lReturn = new List<Tuple<T, T2>>();
             var assembly = Assembly.GetExecutingAssembly();
             string[] fileParts;
 
@@ -32,8 +32,8 @@ namespace Timezone
             foreach (string part in fileParts)
             {
                 string[] sLineParts = part.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-                Tuple<string, string> timeZone = new Tuple<string, string>(sLineParts.First(), sLineParts.Last());
+        
+                Tuple<T, T2> timeZone = new Tuple<T, T2>((T)Convert.ChangeType(sLineParts.First(), typeof(T)), (T2)Convert.ChangeType(sLineParts.Last(), typeof(T2)));
 
                 lReturn.Add(timeZone);
             }
